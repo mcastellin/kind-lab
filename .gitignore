@@ -1,0 +1,7 @@
+sa-signer.*
+kind-config.yaml
+keys.json
+discovery.json
+
+.terraform*
+terraform.tfstate*

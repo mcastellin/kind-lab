@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: details-v1
+spec:
+  template:
+    spec:
+      serviceAccountName: bookinfo-sa
+      initContainers:
+      - name: verify-aws-access
+        image: amazon/aws-cli
+        command: ['sh', '-c', 'echo "Testing AWS Access..."; aws s3 ls; if [ $? -eq 0 ]; then echo "Success!"; else echo "Failed"; exit 1; fi']

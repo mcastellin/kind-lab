@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bookinfo
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "10"
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/mcastellin/kind-lab.git'
+    path: apps/bookinfo/Chart
+    targetRevision: HEAD
+    helm:
+      parameters:
+      - name: serviceAccount.roleArn
+        value: "{{ .Values.irsaRoleArn }}"
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: bookinfo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wait-for-pod-identity-webhook
+  namespace: bookinfo
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: wait
+        image: busybox
+        command: 
+          - sh
+          - -c
+          - |
+            echo "Waiting for Pod Identity Webhook..."
+            until nc -z pod-identity-webhook-amazon-eks-pod-identity-webhook.kube-system.svc 8443; do 
+              echo "Webhook not ready yet..."
+              sleep 2
+            done
+            echo "Webhook is reachable! Proceeding."
+      restartPolicy: OnFailure
